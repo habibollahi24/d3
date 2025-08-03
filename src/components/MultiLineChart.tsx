@@ -39,7 +39,7 @@ export default function MultiLineChart({ data }: Props) {
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${height})`);
     g.append('g').attr('class', 'y-axis');
-  }, []);
+  }, [isLoading]);
 
   // Draw the chart (runs when `data` changes)
   useEffect(() => {
@@ -176,34 +176,36 @@ export default function MultiLineChart({ data }: Props) {
       .attr('x', 18)
       .attr('y', 10)
       .style('font-size', '12px');
-  }, [data]);
+  }, [data, isLoading]);
 
   return (
     <div style={{ position: 'relative' }}>
       {/* Optional loading UI */}
-      {isLoading && (
+      {isLoading ? (
         <div className="rounded-3xl w-[1100px] h-[500px] bg-gray-100 flex justify-center items-center">
           Loading ...
         </div>
+      ) : (
+        <>
+          {/* Main chart SVG */}
+          <svg ref={svgRef}></svg>
+
+          {/* Tooltip div (positioned absolutely on hover) */}
+          <div
+            ref={tooltipRef}
+            style={{
+              position: 'absolute',
+              background: 'rgba(0,0,0,0.7)',
+              color: '#fff',
+              padding: '5px 8px',
+              borderRadius: '4px',
+              pointerEvents: 'none',
+              display: 'none',
+              fontSize: '0.75rem',
+            }}
+          ></div>
+        </>
       )}
-
-      {/* Main chart SVG */}
-      <svg ref={svgRef}></svg>
-
-      {/* Tooltip div (positioned absolutely on hover) */}
-      <div
-        ref={tooltipRef}
-        style={{
-          position: 'absolute',
-          background: 'rgba(0,0,0,0.7)',
-          color: '#fff',
-          padding: '5px 8px',
-          borderRadius: '4px',
-          pointerEvents: 'none',
-          display: 'none',
-          fontSize: '0.75rem',
-        }}
-      ></div>
     </div>
   );
 }

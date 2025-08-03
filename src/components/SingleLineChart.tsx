@@ -37,7 +37,7 @@ export default function SingleLineChart({ data }: Props) {
       .attr('class', 'x-axis')
       .attr('transform', `translate(0,${height})`);
     g.append('g').attr('class', 'y-axis');
-  }, []);
+  }, [isLoading]);
 
   // Draw chart whenever `data` changes
   useEffect(() => {
@@ -146,34 +146,36 @@ export default function SingleLineChart({ data }: Props) {
       .attr('y', -21)
       .attr('font-size', '0.8rem')
       .text('Single Series');
-  }, [data]);
+  }, [data, isLoading]);
 
   return (
     <div style={{ position: 'relative' }}>
       {/* Show loader while initializing */}
-      {isLoading && (
+      {isLoading ? (
         <div className="rounded-3xl w-[1100px] h-[500px] bg-gray-100 flex justify-center items-center">
           Loading ...
         </div>
+      ) : (
+        <>
+          {/* Chart container */}
+          <svg ref={svgRef}></svg>
+
+          {/* Custom tooltip */}
+          <div
+            ref={tooltipRef}
+            style={{
+              position: 'absolute',
+              background: 'rgba(0,0,0,0.7)',
+              color: '#fff',
+              padding: '5px 8px',
+              borderRadius: '4px',
+              pointerEvents: 'none',
+              display: 'none',
+              fontSize: '0.75rem',
+            }}
+          ></div>
+        </>
       )}
-
-      {/* Chart container */}
-      <svg ref={svgRef}></svg>
-
-      {/* Custom tooltip */}
-      <div
-        ref={tooltipRef}
-        style={{
-          position: 'absolute',
-          background: 'rgba(0,0,0,0.7)',
-          color: '#fff',
-          padding: '5px 8px',
-          borderRadius: '4px',
-          pointerEvents: 'none',
-          display: 'none',
-          fontSize: '0.75rem',
-        }}
-      ></div>
     </div>
   );
 }
